@@ -2,6 +2,13 @@
   publish = "public"
   functions = "netlify/functions"
 
+# ── Agendamento do keep-alive ──────────────────────────────
+# Executa a cada 5 dias às 08:00 UTC para manter o Supabase ativo.
+# O Supabase pausa projetos gratuitos após 7 dias sem requisições.
+# Referência de cron: minuto hora dia mês dia-da-semana
+[functions."keepalive"]
+  schedule = "0 8 */5 * *"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
