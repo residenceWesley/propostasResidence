@@ -177,15 +177,6 @@ exports.handler = async (event) => {
         await db.from('proposals').update({ status: 'active' }).eq('id', prop.id);
       }
 
-      // Check if there's already an active entry for this broker on this proposal
-      const { data: myActive } = await db
-        .from('queue_entries')
-        .select('id')
-        .eq('proposal_id', prop.id)
-        .eq('broker_id', me.id)
-        .in('status', ['active', 'waiting']);
-
-      if (myActive && myActive.length > 0) return err('Você já tem uma proposta nessa fila.');
     } else {
       // Create new proposal
       const { data: newProp, error: pe } = await db

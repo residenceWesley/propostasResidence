@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Propostas Residence</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:#f0f4fa;--surface:#ffffff;--surface2:#e8eef8;--surface3:#d4dfef;
@@ -29,7 +29,7 @@
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
   #auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 40%,var(--auth-bg1) 0%,var(--auth-bg2) 70%);padding:16px}
   .auth-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow)}
-  .auth-logo{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:4px}
+  .auth-logo{font-family:'DM Sans',sans-serif;font-weight:700;font-size:26px;color:var(--accent);margin-bottom:4px}
   .auth-sub{color:var(--muted);font-size:13px;margin-bottom:28px}
   .auth-tabs{display:flex;gap:8px;margin-bottom:24px}
   .auth-tab{flex:1;padding:9px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all .2s}
@@ -58,7 +58,7 @@
   .err{color:var(--red);font-size:13px;margin-bottom:12px}
   #app{display:none;flex-direction:column;min-height:100vh}
   header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);white-space:nowrap;flex-shrink:0}
+  .logo{font-family:'DM Sans',sans-serif;font-weight:700;font-size:20px;color:var(--accent);white-space:nowrap;flex-shrink:0}
   .nav{display:flex;gap:2px;flex-wrap:nowrap}
   .nav-btn{padding:7px 13px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
   .nav-btn.active,.nav-btn:hover{background:var(--surface2);color:var(--text)}
@@ -74,7 +74,7 @@
   main{flex:1;padding:28px 24px;max-width:1200px;margin:0 auto;width:100%}
   .page{display:none}
   .page.active{display:block}
-  .page-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:4px}
+  .page-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:28px;margin-bottom:4px}
   .page-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
   .toolbar{display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
   .search-box{flex:1;min-width:180px;padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;margin-bottom:0}
@@ -84,7 +84,7 @@
   .prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0;transition:opacity .2s}
   .prop-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
   .prop-card:hover::before{opacity:1}
-  .card-code{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent);margin-bottom:3px}
+  .card-code{font-family:'DM Sans',sans-serif;font-weight:700;font-size:18px;color:var(--accent);margin-bottom:3px}
   .card-meta{font-size:12px;color:var(--muted);margin-bottom:2px}
   .card-value{font-size:21px;font-weight:700;margin-bottom:14px;color:var(--text)}
   .card-timer{display:flex;align-items:center;gap:8px;font-size:12px}
@@ -99,17 +99,17 @@
   .timer-crit{background:#d63b3b}
   .empty-state{text-align:center;padding:64px 20px;color:var(--muted)}
   .empty-icon{font-size:44px;margin-bottom:14px}
-  .empty-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:6px;color:var(--text)}
+  .empty-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:20px;margin-bottom:6px;color:var(--text)}
   .loading{text-align:center;padding:40px;color:var(--muted);font-size:14px}
   .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:16px}
   .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 28px 24px;width:100%;max-width:560px;max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 20px 60px rgba(82,153,224,.18);animation:modalIn .2s ease}
   @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}}
-  .modal-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:3px;color:var(--text)}
+  .modal-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;margin-bottom:3px;color:var(--text)}
   .modal-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
   .modal-close{position:absolute;top:14px;right:14px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:5px 8px;border-radius:6px;transition:all .2s;line-height:1}
   .modal-close:hover{background:var(--surface2);color:var(--text)}
   .modal-header{position:relative;padding-right:36px}
-  .detail-code{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:4px}
+  .detail-code{font-family:'DM Sans',sans-serif;font-weight:700;font-size:26px;color:var(--accent);margin-bottom:4px}
   .detail-value{font-size:30px;font-weight:700;margin-bottom:16px;color:var(--text)}
   .info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px}
   .info-row:last-child{border-bottom:none}
@@ -126,12 +126,12 @@
   .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
   .action-row .btn{flex:1 1 auto;min-width:140px;font-size:13px;padding:10px 14px}
   .hist-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .hist-code{font-family:'DM Serif Display',serif;font-size:15px;color:var(--accent);min-width:120px;flex-shrink:0}
+  .hist-code{font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;color:var(--accent);min-width:120px;flex-shrink:0}
   .hist-info{flex:1;font-size:13px;color:var(--muted);min-width:120px}
   .hist-val{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap}
   .hist-reason{font-size:11px;padding:3px 9px;border-radius:20px;white-space:nowrap}
   .hist-expired{background:rgba(214,59,59,.12);color:var(--red)}
-  .hist-finalized{background:rgba(26,140,78,.12);color:var(--green)}
+  .hist-finalized{background:rgba(214,59,59,.12);color:var(--red)}
   .user-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;flex-wrap:wrap}
   .user-avatar{width:38px;height:38px;border-radius:50%;background:rgba(82,153,224,.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0}
   .user-meta{flex:1;min-width:100px}
@@ -242,6 +242,9 @@
     <div class="page" id="page-history">
       <div class="page-title">Histórico de Propostas</div>
       <div class="page-sub" id="history-sub">Propostas finalizadas ou expiradas.</div>
+      <div class="toolbar" style="margin-bottom:16px">
+        <input class="search-box" type="text" id="history-search" placeholder="Buscar por código, corretor ou cliente…" oninput="filterHistory()"/>
+      </div>
       <div id="history-list"><div class="loading">Carregando…</div></div>
     </div>
     <div class="page" id="page-admin">
@@ -689,36 +692,53 @@ async function submitQueueProposal() {
 // ═══════════════════════════════════════════════
 // HISTORY
 // ═══════════════════════════════════════════════
+let allHistory = [];
+
 async function renderHistory() {
   const list = document.getElementById('history-list');
   const sub = document.getElementById('history-sub');
   list.innerHTML = '<div class="loading">Carregando…</div>';
+  const searchEl = document.getElementById('history-search');
+  if (searchEl) searchEl.value = '';
   try {
     const { history } = await API.proposals({ action: 'list_history' });
     const isPrivileged = currentUser.role === 'admin' || currentUser.role === 'manager';
     sub.textContent = isPrivileged
       ? 'Todas as propostas finalizadas ou expiradas.'
       : 'Suas propostas finalizadas ou expiradas.';
-    if (!history || history.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Sem histórico ainda</div></div>`;
-      return;
-    }
-    list.innerHTML = history.map(h => `
-      <div class="hist-card">
-        <div class="hist-code">${h.proposals?.code || '—'}</div>
-        <div class="hist-info">
-          <div>${h.broker_name}</div>
-          <div>Cliente: ${h.client_name || '—'}</div>
-          <div>${new Date(h.ended_at).toLocaleString('pt-BR')}</div>
-        </div>
-        <div class="hist-val">R$ ${fmt(h.value)}</div>
-        <span class="hist-reason ${h.reason === 'expired' ? 'hist-expired' : 'hist-finalized'}">
-          ${h.reason === 'expired' ? 'Expirada' : 'Finalizada'}
-        </span>
-      </div>`).join('');
+    allHistory = history || [];
+    filterHistory();
   } catch (e) {
     list.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Erro ao carregar</div><div>${e.message}</div></div>`;
   }
+}
+
+function filterHistory() {
+  const list = document.getElementById('history-list');
+  const q = (document.getElementById('history-search')?.value || '').toLowerCase();
+  const filtered = allHistory.filter(h =>
+    !q ||
+    (h.proposals?.code || '').toLowerCase().includes(q) ||
+    h.broker_name.toLowerCase().includes(q) ||
+    (h.client_name || '').toLowerCase().includes(q)
+  );
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">${q ? 'Nenhum resultado' : 'Sem histórico ainda'}</div></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(h => `
+    <div class="hist-card">
+      <div class="hist-code">${h.proposals?.code || '—'}</div>
+      <div class="hist-info">
+        <div>${h.broker_name}</div>
+        <div>Cliente: ${h.client_name || '—'}</div>
+        <div>${new Date(h.ended_at).toLocaleString('pt-BR')}</div>
+      </div>
+      <div class="hist-val">R$ ${fmt(h.value)}</div>
+      <span class="hist-reason ${h.reason === 'expired' ? 'hist-expired' : 'hist-finalized'}">
+        ${h.reason === 'expired' ? 'Expirada' : 'Finalizada'}
+      </span>
+    </div>`).join('');
 }
 
 // ═══════════════════════════════════════════════
