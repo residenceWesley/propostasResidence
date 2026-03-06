@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propostas Residence</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f0f4fa;--surface:#ffffff;--surface2:#e8eef8;--surface3:#d4dfef;
+    --border:#c2d0e8;--accent:#5299e0;--accent2:#3a82cc;
+    --red:#d63b3b;--green:#1a8c4e;--blue:#5299e0;
+    --text:#111827;--muted:#4a5780;--muted2:#8494b8;--radius:12px;
+    --shadow:0 4px 24px rgba(82,153,224,0.13);
+    --header-bg:rgba(255,255,255,0.95);--modal-overlay:rgba(30,50,100,.4);
+    --auth-bg1:#dce8ff;--auth-bg2:#f0f4fa;--toast-bg:#ffffff;
+  }
+  body.dark {
+    --bg:#0d0f14;--surface:#161921;--surface2:#1e2230;--surface3:#252a3a;
+    --border:#2e3448;--accent:#5299e0;--accent2:#74b0e8;
+    --red:#e05252;--green:#52c07a;--blue:#5299e0;
+    --text:#edeef2;--muted:#7a8099;--muted2:#4e5470;
+    --shadow:0 4px 24px rgba(0,0,0,0.45);
+    --header-bg:rgba(13,15,20,0.94);--modal-overlay:rgba(0,0,0,.72);
+    --auth-bg1:#1a1f2e;--auth-bg2:#0d0f14;--toast-bg:#1e2230;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+  #auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 40%,var(--auth-bg1) 0%,var(--auth-bg2) 70%);padding:16px}
+  .auth-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow)}
+  .auth-logo{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:4px}
+  .auth-sub{color:var(--muted);font-size:13px;margin-bottom:28px}
+  .auth-tabs{display:flex;gap:8px;margin-bottom:24px}
+  .auth-tab{flex:1;padding:9px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all .2s}
+  .auth-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase}
+  input[type=text],input[type=password],input[type=number],select,textarea{width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s,background .2s;margin-bottom:16px;-webkit-appearance:none;appearance:none}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a5780' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(82,153,224,.15)}
+  .pass-wrap{position:relative;margin-bottom:16px}
+  .pass-wrap input{margin-bottom:0;padding-right:44px}
+  .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:17px;padding:4px;line-height:1;opacity:.6;transition:opacity .2s}
+  .eye-btn:hover{opacity:1}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;text-align:center}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover:not(:disabled){background:var(--accent2)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+  .btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .btn-danger{background:var(--red);color:#fff}
+  .btn-danger:hover:not(:disabled){filter:brightness(.88)}
+  .btn-success{background:var(--green);color:#fff}
+  .btn-success:hover:not(:disabled){filter:brightness(.88)}
+  .btn-blue{background:var(--blue);color:#fff}
+  .btn-blue:hover:not(:disabled){filter:brightness(.88)}
+  .btn-full{width:100%}
+  .err{color:var(--red);font-size:13px;margin-bottom:12px}
+  #app{display:none;flex-direction:column;min-height:100vh}
+  header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);white-space:nowrap;flex-shrink:0}
+  .nav{display:flex;gap:2px;flex-wrap:nowrap}
+  .nav-btn{padding:7px 13px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+  .nav-btn.active,.nav-btn:hover{background:var(--surface2);color:var(--text)}
+  .nav-btn.active{color:var(--accent);font-weight:600}
+  .user-info{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-shrink:0}
+  #header-username{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .theme-toggle{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;padding:5px 9px;font-size:16px;transition:all .2s;line-height:1;flex-shrink:0}
+  .theme-toggle:hover{border-color:var(--accent)}
+  .badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+  .badge-manager{background:rgba(82,153,224,.15);color:var(--accent)}
+  .badge-admin{background:rgba(82,153,224,.2);color:var(--accent2)}
+  .badge-broker{background:rgba(74,87,128,.1);color:var(--muted)}
+  main{flex:1;padding:28px 24px;max-width:1200px;margin:0 auto;width:100%}
+  .page{display:none}
+  .page.active{display:block}
+  .page-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:4px}
+  .page-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .toolbar{display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+  .search-box{flex:1;min-width:180px;padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;margin-bottom:0}
+  .search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(82,153,224,.12)}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .prop-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+  .prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0;transition:opacity .2s}
+  .prop-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .prop-card:hover::before{opacity:1}
+  .card-code{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent);margin-bottom:3px}
+  .card-meta{font-size:12px;color:var(--muted);margin-bottom:2px}
+  .card-value{font-size:21px;font-weight:700;margin-bottom:14px;color:var(--text)}
+  .card-timer{display:flex;align-items:center;gap:8px;font-size:12px}
+  .timer-bar{flex:1;height:4px;border-radius:2px;background:var(--surface3);overflow:hidden}
+  .timer-fill{height:100%;border-radius:2px;transition:width 1s linear,background .5s}
+  .timer-text{color:var(--muted);min-width:58px;text-align:right}
+  .card-queue{margin-top:10px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .queue-dot{width:6px;height:6px;border-radius:50%;background:var(--surface3)}
+  .queue-dot.active{background:var(--accent)}
+  .timer-ok{background:#1a8c4e}
+  .timer-warn{background:#d97706}
+  .timer-crit{background:#d63b3b}
+  .empty-state{text-align:center;padding:64px 20px;color:var(--muted)}
+  .empty-icon{font-size:44px;margin-bottom:14px}
+  .empty-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:6px;color:var(--text)}
+  .loading{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+  .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:16px}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 28px 24px;width:100%;max-width:560px;max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 20px 60px rgba(82,153,224,.18);animation:modalIn .2s ease}
+  @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}}
+  .modal-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:3px;color:var(--text)}
+  .modal-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .modal-close{position:absolute;top:14px;right:14px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:5px 8px;border-radius:6px;transition:all .2s;line-height:1}
+  .modal-close:hover{background:var(--surface2);color:var(--text)}
+  .modal-header{position:relative;padding-right:36px}
+  .detail-code{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:4px}
+  .detail-value{font-size:30px;font-weight:700;margin-bottom:16px;color:var(--text)}
+  .info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px}
+  .info-row:last-child{border-bottom:none}
+  .info-label{color:var(--muted);flex-shrink:0}
+  .info-val{text-align:right;word-break:break-word}
+  .queue-list{margin:16px 0}
+  .queue-item{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;font-size:14px}
+  .queue-num{width:26px;height:26px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px}
+  .queue-num.first{background:var(--accent);color:#fff}
+  .queue-info{flex:1;min-width:0}
+  .queue-broker{font-weight:600;color:var(--text)}
+  .queue-val{color:var(--accent);font-weight:600}
+  .queue-time{color:var(--muted);font-size:12px;margin-top:2px}
+  .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .action-row .btn{flex:1 1 auto;min-width:140px;font-size:13px;padding:10px 14px}
+  .hist-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .hist-code{font-family:'DM Serif Display',serif;font-size:15px;color:var(--accent);min-width:120px;flex-shrink:0}
+  .hist-info{flex:1;font-size:13px;color:var(--muted);min-width:120px}
+  .hist-val{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap}
+  .hist-reason{font-size:11px;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .hist-expired{background:rgba(214,59,59,.12);color:var(--red)}
+  .hist-finalized{background:rgba(26,140,78,.12);color:var(--green)}
+  .user-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;flex-wrap:wrap}
+  .user-avatar{width:38px;height:38px;border-radius:50%;background:rgba(82,153,224,.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0}
+  .user-meta{flex:1;min-width:100px}
+  .user-name-label{font-weight:600;font-size:14px;color:var(--text)}
+  .user-role-label{color:var(--muted);font-size:12px;margin-top:1px}
+  .user-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+  #toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--toast-bg);border:1px solid var(--border);border-radius:10px;padding:13px 18px;font-size:14px;max-width:300px;color:var(--text);box-shadow:var(--shadow);display:none;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(8px)}}
+  .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+  @media(max-width:768px){
+    header{padding:0 14px;height:auto;min-height:56px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px;gap:8px}
+    .logo{font-size:17px}
+    .nav{order:3;width:100%;border-top:1px solid var(--border);padding-top:6px;padding-bottom:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .nav-btn{font-size:12px;padding:6px 10px}
+    .user-info{gap:6px}
+    #header-username{display:none}
+    main{padding:16px 14px}
+    .page-title{font-size:22px}
+    .cards-grid{grid-template-columns:1fr}
+    .toolbar{gap:8px}
+    .modal{padding:20px 18px;border-radius:14px}
+    .modal-title{font-size:19px}
+    .detail-code{font-size:20px}
+    .detail-value{font-size:24px}
+    .action-row .btn{min-width:100%}
+    .hist-card{padding:12px 14px;gap:10px}
+    .hist-code{min-width:100px;font-size:13px}
+    .user-row{padding:12px 14px}
+    .user-actions{width:100%;margin-left:0}
+    .user-actions select{flex:1}
+    .user-actions .btn{flex:1;font-size:12px;padding:8px 10px}
+    .auth-box{padding:28px 20px;border-radius:16px}
+    #toast{bottom:12px;right:12px;left:12px;max-width:none}
+  }
+  @media(max-width:400px){
+    .nav-btn{font-size:11px;padding:5px 8px}
+    .btn{font-size:13px}
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">Propostas Residence</div>
+    <div class="auth-sub">Sistema de gestão de propostas imobiliárias</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
+      <button class="auth-tab" onclick="switchTab('register')">Criar conta</button>
+    </div>
+    <div id="tab-login">
+      <label>Nome de usuário</label>
+      <input type="text" id="login-name" placeholder="Digite seu nome" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <label>Senha</label>
+      <div class="pass-wrap">
+        <input type="password" id="login-pass" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button type="button" class="eye-btn" onclick="togglePassVis('login-pass','eye-login')" id="eye-login">👁</button>
+      </div>
+      <div class="err" id="login-err"></div>
+      <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">Entrar no sistema</button>
+    </div>
+    <div id="tab-register" style="display:none">
+      <label>Nome de usuário</label>
+      <input type="text" id="reg-name" placeholder="Ex: João Silva"/>
+      <label>Senha</label>
+      <div class="pass-wrap">
+        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"/>
+        <button type="button" class="eye-btn" onclick="togglePassVis('reg-pass','eye-reg1')" id="eye-reg1">👁</button>
+      </div>
+      <label>Confirmar senha</label>
+      <div class="pass-wrap">
+        <input type="password" id="reg-pass2" placeholder="Repita a senha"/>
+        <button type="button" class="eye-btn" onclick="togglePassVis('reg-pass2','eye-reg2')" id="eye-reg2">👁</button>
+      </div>
+      <div class="err" id="reg-err"></div>
+      <button class="btn btn-primary btn-full" id="reg-btn" onclick="doRegister()">Criar minha conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="logo">Propostas Residence</div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showPage('proposals')" id="nav-proposals">Propostas</button>
+      <button class="nav-btn" onclick="showPage('history')" id="nav-history">Histórico</button>
+      <button class="nav-btn" id="nav-admin" onclick="showPage('admin')" style="display:none">Administração</button>
+    </nav>
+    <div class="user-info">
+      <span id="header-username"></span>
+      <span id="header-badge"></span>
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Alternar tema">🌙</button>
+      <button class="btn btn-ghost" style="padding:7px 12px;font-size:12px" onclick="logout()">Sair</button>
+    </div>
+  </header>
+  <main>
+    <div class="page active" id="page-proposals">
+      <div class="page-title">Propostas Ativas</div>
+      <div class="page-sub">Propostas de locação em andamento. Clique em um card para ver detalhes e a fila.</div>
+      <div class="toolbar">
+        <input class="search-box" type="text" placeholder="Buscar por código ou corretor..." oninput="filterCards()" id="search-input"/>
+        <button class="btn btn-primary" onclick="openNewProposalModal()">+ Nova Proposta</button>
+      </div>
+      <div class="cards-grid" id="cards-grid"><div class="loading">Carregando propostas…</div></div>
+    </div>
+    <div class="page" id="page-history">
+      <div class="page-title">Histórico de Propostas</div>
+      <div class="page-sub" id="history-sub">Propostas finalizadas ou expiradas.</div>
+      <div id="history-list"><div class="loading">Carregando…</div></div>
+    </div>
+    <div class="page" id="page-admin">
+      <div class="page-title">Administração</div>
+      <div class="page-sub">Gerencie usuários e permissões do sistema.</div>
+      <div id="admin-users"><div class="loading">Carregando…</div></div>
+    </div>
+  </main>
+</div>
+
+<!-- NEW PROPOSAL MODAL -->
+<div class="modal-overlay" id="modal-new" style="display:none" onclick="if(event.target===this)closeModal('modal-new')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nova Proposta</div>
+      <div class="modal-sub">Preencha os dados da proposta de locação</div>
+      <button class="modal-close" onclick="closeModal('modal-new')">✕</button>
+    </div>
+    <label>Nome do cliente</label>
+    <input type="text" id="new-client" placeholder="Ex: Maria Oliveira"/>
+    <label>Código do imóvel</label>
+    <input type="text" id="new-code" placeholder="CA0175_RESI" oninput="formatCode(this)" maxlength="11"/>
+    <label>Valor da proposta (R$)</label>
+    <input type="number" id="new-value" placeholder="Ex: 2500" min="1"/>
+    <div class="err" id="new-err"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-new')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1" id="new-submit-btn" onclick="submitNewProposal()">Enviar proposta</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modal-detail" style="display:none" onclick="if(event.target===this)closeModal('modal-detail')">
+  <div class="modal" id="modal-detail-content"></div>
+</div>
+
+<!-- QUEUE MODAL -->
+<div class="modal-overlay" id="modal-queue" style="display:none" onclick="if(event.target===this)closeModal('modal-queue')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Entrar na Fila</div>
+      <div class="modal-sub" id="queue-modal-code"></div>
+      <button class="modal-close" onclick="closeModal('modal-queue')">✕</button>
+    </div>
+    <label>Nome do cliente</label>
+    <input type="text" id="queue-client" placeholder="Ex: João Santos"/>
+    <label>Valor da sua proposta (R$)</label>
+    <input type="number" id="queue-value" placeholder="Ex: 2700" min="1"/>
+    <div class="err" id="queue-err"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-queue')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1" id="queue-submit-btn" onclick="submitQueueProposal()">Entrar na fila</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="modal-overlay" id="modal-reset" style="display:none" onclick="if(event.target===this)closeModal('modal-reset')">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title">Redefinir senha</div>
+      <div class="modal-sub">Usuário: <strong id="reset-user-name"></strong></div>
+      <button class="modal-close" onclick="closeModal('modal-reset')">✕</button>
+    </div>
+    <label>Nova senha</label>
+    <div class="pass-wrap">
+      <input type="password" id="reset-new-pass" placeholder="Mínimo 6 caracteres"/>
+      <button type="button" class="eye-btn" onclick="togglePassVis('reset-new-pass','eye-r1')" id="eye-r1">👁</button>
+    </div>
+    <label>Confirmar nova senha</label>
+    <div class="pass-wrap">
+      <input type="password" id="reset-new-pass2" placeholder="Repita a senha"/>
+      <button type="button" class="eye-btn" onclick="togglePassVis('reset-new-pass2','eye-r2')" id="eye-r2">👁</button>
+    </div>
+    <div class="err" id="reset-err"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-reset')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1" id="reset-submit-btn" onclick="doResetPassword()">Salvar nova senha</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// API LAYER — all calls go through Netlify Functions
+// ═══════════════════════════════════════════════
+const API = {
+  async call(fn, body) {
+    const token = localStorage.getItem('session_token');
+    const res = await fetch(`/api/${fn}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, token }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+    return data;
+  },
+  auth: (body) => API.call('auth', body),
+  proposals: (body) => API.call('proposals', body),
+  users: (body) => API.call('users', body),
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentUser = null;
+let allProposals = []; // cached list
+let detailProposalId = null;
+let queueProposalId = null;
+let refreshInterval = null;
+let resetUserId = null;
+
+// ═══════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════
+(async function boot() {
+  applyTheme();
+  const token = localStorage.getItem('session_token');
+  if (token) {
+    try {
+      const { user } = await API.auth({ action: 'whoami' });
+      currentUser = user;
+      enterApp();
+      return;
+    } catch { localStorage.removeItem('session_token'); }
+  }
+  document.getElementById('auth-screen').style.display = 'flex';
+})();
+
+// ═══════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t, i) =>
+    t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'))
+  );
+  document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const password = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+  errEl.textContent = '';
+  if (!name || !password) { errEl.textContent = 'Preencha todos os campos.'; return; }
+  btn.disabled = true; btn.textContent = 'Entrando…';
+  try {
+    const { token, user } = await API.auth({ action: 'login', name, password });
+    localStorage.setItem('session_token', token);
+    currentUser = user;
+    enterApp();
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Entrar no sistema';
+  }
+}
+
+async function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const password = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  const errEl = document.getElementById('reg-err');
+  const btn = document.getElementById('reg-btn');
+  errEl.textContent = '';
+  if (!name || !password || !pass2) { errEl.textContent = 'Preencha todos os campos.'; return; }
+  if (password.length < 6) { errEl.textContent = 'Senha deve ter ao menos 6 caracteres.'; return; }
+  if (password !== pass2) { errEl.textContent = 'As senhas não coincidem.'; return; }
+  btn.disabled = true; btn.textContent = 'Criando conta…';
+  try {
+    const { token, user } = await API.auth({ action: 'register', name, password });
+    localStorage.setItem('session_token', token);
+    currentUser = user;
+    enterApp();
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Criar minha conta';
+  }
+}
+
+async function logout() {
+  try { await API.auth({ action: 'logout' }); } catch {}
+  localStorage.removeItem('session_token');
+  currentUser = null;
+  clearInterval(refreshInterval);
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-err').textContent = '';
+}
+
+// ═══════════════════════════════════════════════
+// APP SHELL
+// ═══════════════════════════════════════════════
+function enterApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('header-username').textContent = currentUser.name;
+  const badges = { admin: 'badge-admin', manager: 'badge-manager', broker: 'badge-broker' };
+  const labels = { admin: 'Admin', manager: 'Gerente', broker: 'Corretor' };
+  document.getElementById('header-badge').innerHTML =
+    `<span class="badge ${badges[currentUser.role]}">${labels[currentUser.role]}</span>`;
+
+  const isPrivileged = currentUser.role === 'admin' || currentUser.role === 'manager';
+  document.getElementById('nav-admin').style.display = isPrivileged ? 'block' : 'none';
+
+  showPage('proposals');
+  clearInterval(refreshInterval);
+  refreshInterval = setInterval(() => {
+    if (document.getElementById('page-proposals').classList.contains('active')) renderProposals();
+  }, 15000);
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  if (page === 'proposals') renderProposals();
+  if (page === 'history') renderHistory();
+  if (page === 'admin') renderAdmin();
+}
+
+// ═══════════════════════════════════════════════
+// PROPOSALS
+// ═══════════════════════════════════════════════
+const LIMIT = 48 * 60 * 60 * 1000;
+
+async function renderProposals() {
+  const grid = document.getElementById('cards-grid');
+  try {
+    const { proposals } = await API.proposals({ action: 'list_active' });
+    allProposals = proposals || [];
+    filterCards();
+  } catch (e) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚠️</div><div class="empty-title">Erro ao carregar</div><div>${e.message}</div></div>`;
+  }
+}
+
+function filterCards() {
+  const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const grid = document.getElementById('cards-grid');
+  const now = Date.now();
+
+  const filtered = allProposals.filter(p => {
+    const active = p.queue_entries.find(e => e.status === 'active');
+    if (!active) return false;
+    return !search || p.code.toLowerCase().includes(search) || active.broker_name.toLowerCase().includes(search) || (active.client_name||'').toLowerCase().includes(search);
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">🏠</div>
+      <div class="empty-title">Nenhuma proposta ativa</div>
+      <div>Clique em "+ Nova Proposta" para começar</div></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(prop => {
+    const entry = prop.queue_entries.find(e => e.status === 'active');
+    if (!entry) return '';
+    const elapsed = now - new Date(entry.started_at).getTime();
+    const pct = Math.max(0, Math.min(100, (1 - elapsed / LIMIT) * 100));
+    const cls = pct > 50 ? 'timer-ok' : pct > 20 ? 'timer-warn' : 'timer-crit';
+    const remaining = LIMIT - elapsed;
+    const hrs = Math.floor(Math.max(0, remaining) / 3600000);
+    const mins = Math.floor((Math.max(0, remaining) % 3600000) / 60000);
+    const timeStr = remaining <= 0 ? 'Expirando…' : `${hrs}h ${mins}m`;
+    const waiting = prop.queue_entries.filter(e => e.status === 'waiting');
+    const dots = prop.queue_entries.slice(0, 5).map((q, i) =>
+      `<div class="queue-dot ${q.status === 'active' ? 'active' : ''}"></div>`).join('');
+    return `<div class="prop-card" onclick="openDetail('${prop.id}')">
+      <div class="card-code">${prop.code}</div>
+      <div class="card-meta">Corretor: ${entry.broker_name}</div>
+      <div class="card-meta">Cliente: ${entry.client_name || '—'}</div>
+      <div class="card-value">R$ ${fmt(entry.value)}</div>
+      <div class="card-timer">
+        <div class="timer-bar"><div class="timer-fill ${cls}" style="width:${pct}%"></div></div>
+        <div class="timer-text">${timeStr}</div>
+      </div>
+      ${waiting.length > 0 ? `<div class="card-queue">${dots}<span>${waiting.length} na fila</span></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════════
+async function openDetail(propId) {
+  // Refresh to get latest
+  try { const { proposals } = await API.proposals({ action: 'list_active' }); allProposals = proposals || []; } catch {}
+  const prop = allProposals.find(p => p.id === propId);
+  if (!prop) { showToast('Proposta não encontrada.'); return; }
+  detailProposalId = propId;
+
+  const now = Date.now();
+  const active = prop.queue_entries.find(e => e.status === 'active');
+  if (!active) { showToast('Proposta sem entrada ativa.'); return; }
+  const elapsed = now - new Date(active.started_at).getTime();
+  const remaining = Math.max(0, LIMIT - elapsed);
+  const hrs = Math.floor(remaining / 3600000);
+  const mins = Math.floor((remaining % 3600000) / 60000);
+
+  const isOwner = active.broker_id === currentUser.id;
+  const isPrivileged = currentUser.role === 'manager' || currentUser.role === 'admin';
+
+  const sortedEntries = [...prop.queue_entries].sort((a, b) => {
+    if (a.status === 'active') return -1;
+    if (b.status === 'active') return 1;
+    return new Date(a.created_at) - new Date(b.created_at);
+  });
+
+  const queueItems = sortedEntries.map((q, i) => `
+    <div class="queue-item">
+      <div class="queue-num ${i === 0 ? 'first' : ''}">${i + 1}</div>
+      <div class="queue-info">
+        <div class="queue-broker">${q.broker_name}</div>
+        <div style="font-size:12px;color:var(--muted)">Cliente: ${q.client_name || '—'}</div>
+        <div class="queue-val">R$ ${fmt(q.value)}</div>
+        <div class="queue-time">${i === 0 ? `Ativa — ${hrs}h ${mins}m restantes` : `Na fila desde ${new Date(q.created_at).toLocaleString('pt-BR')}`}</div>
+      </div>
+    </div>`).join('');
+
+  let actionButtons = '';
+  if (isOwner && !isPrivileged) {
+    actionButtons += `<button class="btn btn-success" onclick="finalizeProposal('${propId}','current')">✓ Finalizar minha proposta</button>`;
+  }
+  if (isPrivileged) {
+    actionButtons += `<button class="btn btn-danger" onclick="finalizeProposal('${propId}','current')">Derrubar proposta atual</button>`;
+    actionButtons += `<button class="btn btn-danger" onclick="finalizeProposal('${propId}','all')">Encerrar toda a fila</button>`;
+  }
+  actionButtons += `<button class="btn btn-blue" onclick="openQueueModal('${propId}')">+ Entrar na fila</button>`;
+
+  document.getElementById('modal-detail-content').innerHTML = `
+    <div class="modal-header" style="position:relative">
+      <button class="modal-close" onclick="closeModal('modal-detail')">✕</button>
+      <div class="detail-code">${prop.code}</div>
+      <div class="detail-value">R$ ${fmt(active.value)}</div>
+    </div>
+    <div class="info-row"><span class="info-label">Corretor ativo</span><span class="info-val">${active.broker_name}</span></div>
+    <div class="info-row"><span class="info-label">Cliente</span><span class="info-val">${active.client_name || '—'}</span></div>
+    <div class="info-row"><span class="info-label">Iniciada em</span><span class="info-val">${new Date(active.started_at).toLocaleString('pt-BR')}</span></div>
+    <div class="info-row"><span class="info-label">Tempo restante</span><span class="info-val">${remaining === 0 ? 'Expirado' : hrs + 'h ' + mins + 'm'}</span></div>
+    <div class="info-row"><span class="info-label">Propostas na fila</span><span class="info-val">${prop.queue_entries.length}</span></div>
+    <hr class="divider">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em">Fila de propostas</div>
+    <div class="queue-list">${queueItems}</div>
+    <div class="action-row">${actionButtons}</div>`;
+
+  document.getElementById('modal-detail').style.display = 'flex';
+}
+
+async function finalizeProposal(proposalId, scope) {
+  const btns = document.querySelectorAll('.action-row .btn');
+  btns.forEach(b => b.disabled = true);
+  try {
+    await API.proposals({ action: 'finalize', proposalId, scope });
+    closeModal('modal-detail');
+    showToast('Proposta finalizada com sucesso!');
+    await renderProposals();
+  } catch (e) {
+    showToast('Erro: ' + e.message);
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// NEW PROPOSAL
+// ═══════════════════════════════════════════════
+function openNewProposalModal() {
+  ['new-client', 'new-code', 'new-value'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('new-err').textContent = '';
+  document.getElementById('modal-new').style.display = 'flex';
+}
+
+async function submitNewProposal() {
+  const rawCode = document.getElementById('new-code').value.trim();
+  const client = document.getElementById('new-client').value.trim();
+  const value = parseFloat(document.getElementById('new-value').value);
+  const errEl = document.getElementById('new-err');
+  const btn = document.getElementById('new-submit-btn');
+  errEl.textContent = '';
+  if (!client) { errEl.textContent = 'Informe o nome do cliente.'; return; }
+  const code = completeCode(rawCode);
+  if (!code) { errEl.textContent = 'Código inválido. Use o formato: CA0175_RESI'; return; }
+  if (!value || value <= 0) { errEl.textContent = 'Informe um valor válido.'; return; }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    const res = await API.proposals({ action: 'add', code, client, value });
+    closeModal('modal-new');
+    showToast(res.reactivated ? `Proposta para ${code} reativada!` : `Proposta para ${code} criada!`);
+    await renderProposals();
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar proposta';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// QUEUE
+// ═══════════════════════════════════════════════
+function openQueueModal(propId) {
+  queueProposalId = propId;
+  const prop = allProposals.find(p => p.id === propId);
+  document.getElementById('queue-modal-code').textContent = prop ? prop.code : '';
+  document.getElementById('queue-client').value = '';
+  document.getElementById('queue-value').value = '';
+  document.getElementById('queue-err').textContent = '';
+  closeModal('modal-detail');
+  document.getElementById('modal-queue').style.display = 'flex';
+}
+
+async function submitQueueProposal() {
+  const client = document.getElementById('queue-client').value.trim();
+  const value = parseFloat(document.getElementById('queue-value').value);
+  const errEl = document.getElementById('queue-err');
+  const btn = document.getElementById('queue-submit-btn');
+  errEl.textContent = '';
+  if (!client) { errEl.textContent = 'Informe o nome do cliente.'; return; }
+  if (!value || value <= 0) { errEl.textContent = 'Informe um valor válido.'; return; }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  const prop = allProposals.find(p => p.id === queueProposalId);
+  if (!prop) { errEl.textContent = 'Proposta não encontrada.'; btn.disabled = false; btn.textContent = 'Entrar na fila'; return; }
+  try {
+    await API.proposals({ action: 'add', code: prop.code, client, value });
+    closeModal('modal-queue');
+    showToast('Você entrou na fila!');
+    await renderProposals();
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Entrar na fila';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════
+async function renderHistory() {
+  const list = document.getElementById('history-list');
+  const sub = document.getElementById('history-sub');
+  list.innerHTML = '<div class="loading">Carregando…</div>';
+  try {
+    const { history } = await API.proposals({ action: 'list_history' });
+    const isPrivileged = currentUser.role === 'admin' || currentUser.role === 'manager';
+    sub.textContent = isPrivileged
+      ? 'Todas as propostas finalizadas ou expiradas.'
+      : 'Suas propostas finalizadas ou expiradas.';
+    if (!history || history.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Sem histórico ainda</div></div>`;
+      return;
+    }
+    list.innerHTML = history.map(h => `
+      <div class="hist-card">
+        <div class="hist-code">${h.proposals?.code || '—'}</div>
+        <div class="hist-info">
+          <div>${h.broker_name}</div>
+          <div>Cliente: ${h.client_name || '—'}</div>
+          <div>${new Date(h.ended_at).toLocaleString('pt-BR')}</div>
+        </div>
+        <div class="hist-val">R$ ${fmt(h.value)}</div>
+        <span class="hist-reason ${h.reason === 'expired' ? 'hist-expired' : 'hist-finalized'}">
+          ${h.reason === 'expired' ? 'Expirada' : 'Finalizada'}
+        </span>
+      </div>`).join('');
+  } catch (e) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Erro ao carregar</div><div>${e.message}</div></div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+async function renderAdmin() {
+  const div = document.getElementById('admin-users');
+  div.innerHTML = '<div class="loading">Carregando…</div>';
+  try {
+    const { users } = await API.users({ action: 'list' });
+    const isAdmin = currentUser.role === 'admin';
+    if (!users || users.length === 0) {
+      div.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Nenhum usuário cadastrado</div></div>';
+      return;
+    }
+    div.innerHTML = users.map(u => `
+      <div class="user-row">
+        <div class="user-avatar">${u.name[0].toUpperCase()}</div>
+        <div class="user-meta">
+          <div class="user-name-label">${u.name}</div>
+          <div class="user-role-label">${u.role === 'manager' ? 'Gerente' : 'Corretor'}</div>
+        </div>
+        <div class="user-actions">
+          ${isAdmin ? `<select onchange="changeRole('${u.id}',this.value)" style="margin-bottom:0">
+            <option value="broker" ${u.role==='broker'?'selected':''}>Corretor</option>
+            <option value="manager" ${u.role==='manager'?'selected':''}>Gerente</option>
+          </select>` : ''}
+          <button class="btn btn-ghost" onclick="openResetModal('${u.id}','${u.name}')">🔑 Resetar senha</button>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    div.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Erro: ${e.message}</div></div>`;
+  }
+}
+
+async function changeRole(userId, role) {
+  try {
+    await API.users({ action: 'set_role', userId, role });
+    showToast(`Cargo atualizado para ${role === 'manager' ? 'Gerente' : 'Corretor'}`);
+    renderAdmin();
+  } catch (e) { showToast('Erro: ' + e.message); }
+}
+
+function openResetModal(userId, userName) {
+  resetUserId = userId;
+  document.getElementById('reset-user-name').textContent = userName;
+  document.getElementById('reset-new-pass').value = '';
+  document.getElementById('reset-new-pass2').value = '';
+  document.getElementById('reset-err').textContent = '';
+  document.getElementById('modal-reset').style.display = 'flex';
+}
+
+async function doResetPassword() {
+  const newPassword = document.getElementById('reset-new-pass').value;
+  const pass2 = document.getElementById('reset-new-pass2').value;
+  const errEl = document.getElementById('reset-err');
+  const btn = document.getElementById('reset-submit-btn');
+  errEl.textContent = '';
+  if (newPassword.length < 6) { errEl.textContent = 'Senha deve ter ao menos 6 caracteres.'; return; }
+  if (newPassword !== pass2) { errEl.textContent = 'As senhas não coincidem.'; return; }
+  btn.disabled = true; btn.textContent = 'Salvando…';
+  try {
+    await API.users({ action: 'reset_password', userId: resetUserId, newPassword });
+    closeModal('modal-reset');
+    showToast('Senha redefinida com sucesso!');
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Salvar nova senha';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function fmt(v) { return Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+function formatCode(input) { input.value = input.value.toUpperCase().replace(/[^A-Z0-9_]/g, ''); }
+
+function completeCode(raw) {
+  const v = raw.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+  const m = v.match(/^([A-Z]{2})(\d{4})(_RESI)?$/);
+  if (m) return m[1] + m[2] + '_RESI';
+  if (/^[A-Z]{2}\d{4}_RESI$/.test(v)) return v;
+  return null;
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function togglePassVis(inputId, btnId) {
+  const inp = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  btn.style.opacity = inp.type === 'password' ? '.6' : '1';
+}
+
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
+}
+
+function applyTheme() {
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = '☀️';
+  }
+}
+</script>
+</body>
+</html>
